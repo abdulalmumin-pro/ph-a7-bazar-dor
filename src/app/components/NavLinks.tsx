@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -11,37 +12,66 @@ export interface CategoryType {
   icon: string;
 }
 
+const API_URL =
+  "https://api.api-store.workers.dev/api/bazardor/categories";
+
 export default function NavLinks() {
   const pathname = usePathname();
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    let isMounted = true;
+
+    async function fetchCategories() {
       try {
-        const res = await fetch(
-          "https://api.api-store.workers.dev/api/bazardor/categories"
-        );
-        if (res.ok) {
-          const data: CategoryType[] = await res.json();
-          setCategories(data);
+        const res = await fetch(API_URL);
+
+        if (!res.ok) {
+          throw new Error(`Categories API error: ${res.status}`);
+        }
+
+        const result: unknown = await res.json();
+
+        // API সরাসরি array অথবা { data: [...] } দিতে পারে
+        let categoryData: unknown = result;
+
+        if (
+          result &&
+          typeof result === "object" &&
+          !Array.isArray(result) &&
+          "data" in result
+        ) {
+          categoryData = result.data;
+        }
+
+        if (!Array.isArray(categoryData)) {
+          throw new Error("Invalid categories API response");
+        }
+
+        if (isMounted) {
+          setCategories(categoryData as CategoryType[]);
         }
       } catch (error) {
         console.error("Failed to fetch categories:", error);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    }
 
     fetchCategories();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  if (isLoading || !Array.isArray(categories) || categories.length === 0) {
+  if (!pathname || categories.length === 0) {
     return null;
   }
 
   return (
-    <nav className="w-full border-b border-slate-100 bg-white">
+    <nav
+      aria-label="পণ্যের ক্যাটাগরি"
+      className="w-full border-b border-slate-100 bg-white"
+    >
       <div
         className="
           mx-auto flex h-[42px] max-w-7xl
@@ -52,13 +82,18 @@ export default function NavLinks() {
         "
       >
         {categories.map((category) => {
+          // সঠিক template literal
           const categoryPath = `/category/${category.slug}`;
-          const isActive = pathname === categoryPath;
+
+          const isActive =
+            pathname === categoryPath ||
+            pathname.startsWith(`${categoryPath}/`);
 
           return (
             <Link
               key={category.id}
               href={categoryPath}
+              aria-current={isActive ? "page" : undefined}
               className={`
                 group relative flex shrink-0 items-center gap-2
                 whitespace-nowrap py-2
@@ -84,7 +119,6 @@ export default function NavLinks() {
 
               <span>{category.nameBn}</span>
 
-              {/* Active Indicator Line at the Bottom */}
               {isActive && (
                 <span className="absolute bottom-0 left-0 h-[2.5px] w-full rounded-full bg-emerald-600" />
               )}

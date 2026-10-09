@@ -15,7 +15,7 @@ export interface Product {
   change: ProductChange;
 }
 
-const API_URL = "https://api.api-store.workers.dev/api/bazardor/products";
+const API_URL = process.env.FALLERS_PRODUCT_URL;
 
 const formatBn = (value: number): string =>
   new Intl.NumberFormat("bn-BD", {

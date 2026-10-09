@@ -2,8 +2,42 @@
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
+  const router = useRouter();
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const user = Object.fromEntries(formData.entries()) as Record<string, string>;
+
+    if (user.password !== user.confirmPassword) {
+      alert("পাসওয়ার্ড দুটি মিলছে না!");
+      return;
+    }
+
+    console.log("Form Data Submitted:", user);
+
+    const { data, error } = await authClient.signUp.email({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      callbackURL: "/"
+    });
+
+    if (data) {
+      console.log(data);
+      router.push("/");
+    }
+
+    if (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f2f5f2] flex flex-col justify-center items-center py-6 px-4">
       {/* Header Section */}
@@ -18,7 +52,7 @@ const SignUp = () => {
 
       {/* Card Container */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 w-full max-w-md">
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-3.5">
+        <form onSubmit={onSubmit} className="space-y-3.5">
           {/* Name Field */}
           <div>
             <label className="block text-xs font-semibold text-gray-800 mb-1">
@@ -26,6 +60,8 @@ const SignUp = () => {
             </label>
             <input
               type="text"
+              name="name"
+              required
               placeholder="যেমন: রহিম উদ্দিন"
               className="w-full px-3.5 py-2 bg-[#fbfcfb] border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-600 transition"
             />
@@ -38,6 +74,8 @@ const SignUp = () => {
             </label>
             <input
               type="email"
+              name="email"
+              required
               placeholder="you@example.com"
               className="w-full px-3.5 py-2 bg-[#fbfcfb] border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-600 transition"
             />
@@ -50,6 +88,9 @@ const SignUp = () => {
             </label>
             <input
               type="password"
+              name="password"
+              required
+              minLength={8}
               placeholder="কমপক্ষে ৮ অক্ষর"
               className="w-full px-3.5 py-2 bg-[#fbfcfb] border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-600 transition"
             />
@@ -62,6 +103,8 @@ const SignUp = () => {
             </label>
             <input
               type="password"
+              name="confirmPassword"
+              required
               placeholder="আবার লিখুন"
               className="w-full px-3.5 py-2 bg-[#fbfcfb] border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-green-600 transition"
             />
@@ -93,14 +136,14 @@ const SignUp = () => {
             className="flex items-center justify-center gap-2 px-2.5 py-2 border border-gray-200 rounded-lg bg-[#fbfcfb] text-gray-800 font-semibold text-xs hover:bg-gray-50 transition"
           >
             <FcGoogle className="text-sm" />
-            Google দিয়ে চালিয়ে যান
+            Google দিয়ে চালিয়ে যান
           </button>
           <button
             type="button"
             className="flex items-center justify-center gap-2 px-2.5 py-2 border border-gray-200 rounded-lg bg-[#fbfcfb] text-gray-800 font-semibold text-xs hover:bg-gray-50 transition"
           >
             <FaGithub className="text-sm text-black" />
-            GitHub দিয়ে চালিয়ে যান
+            GitHub দিয়ে চালিয়ে যান
           </button>
         </div>
 
@@ -108,7 +151,7 @@ const SignUp = () => {
         <div className="text-center text-xs font-medium text-gray-700">
           অ্যাকাউন্ট আছে?{" "}
           <Link
-            href="/login"
+            href="/sign-in"
             className="text-[#018642] font-semibold hover:underline"
           >
             সাইন ইন করুন

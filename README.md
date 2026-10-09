@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BazarDor 🛒
 
-## Getting Started
+### Smart Daily Market Price Tracking for Bangladesh
 
-First, run the development server:
+**BazarDor is a modern web application designed to help people in Bangladesh explore and track daily market prices of essential commodities. It aims to make market information more accessible, transparent, and convenient so users can make informed purchasing decisions.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **📊 Daily Market Prices** — Browse the latest available prices of essential commodities, including rice, vegetables, fish, meat, and other daily necessities.
+- **🔍 Search & Filter** — Quickly find specific products and filter market prices by category or other available criteria.
+- **📈 Price Comparison** — Compare commodity prices across different markets to identify affordable purchasing options.
+- **📱 Responsive Design** — Enjoy a smooth, user-friendly experience across mobile phones, tablets, laptops, and desktops.
+- **🇧🇩 Bangladesh-Focused Experience** — Provide market information relevant to local consumers, with support for Bangladeshi currency (৳ BDT) and Bengali-friendly content.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Technologies Used
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Technology                                                             | Purpose                                                                                        |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [Next.js](https://nextjs.org/)                                         | React framework for building the web application                                               |
+| [React](https://react.dev/)                                            | Component-based user interface development                                                     |
+| [TypeScript](https://www.typescriptlang.org/)                          | Type-safe and maintainable code                                                                |
+| [Tailwind CSS](https://tailwindcss.com/)                               | Responsive styling and modern UI design                                                        |
+| [MongoDB](https://www.mongodb.com/)                                    | NoSQL database for storing and managing market prices, product information, and market data \| |
+| [REST API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) | Integration with market price data, if available                                               |
 
-## Learn More
+*The technology list can be adjusted to match the libraries and services actually installed in your project.*
 
-To learn more about Next.js, take a look at the following resources:
+**5. Open the application**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+##
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+##

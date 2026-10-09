@@ -27,7 +27,7 @@ const Marquee = async () => {
 
   try {
     const res = await fetch(
-      "https://api.api-store.workers.dev/api/bazardor/products",
+      process.env.MARQUEE_URL as string,
       {
         cache: "no-store",
       }

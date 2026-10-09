@@ -85,7 +85,7 @@ const SignIn = () => {
         <div className="text-center text-xs font-medium text-gray-700">
           অ্যাকাউন্ট আছে?{" "}
           <Link
-            href="/login"
+            href="/sign-up"
             className="text-[#018642] font-semibold hover:underline"
           >
             সাইন আপ করুন

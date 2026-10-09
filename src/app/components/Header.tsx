@@ -1,19 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import NavLinks from "./NavLinks";
 import Marquee from "./Marquee";
 
 const Header = () => {
-  const formattedDate = new Date().toLocaleDateString("bn-BD", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const [formattedDate, setFormattedDate] = useState("");
+
+  useEffect(() => {
+    setFormattedDate(
+      new Date().toLocaleDateString("bn-BD", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    );
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white">
-      {/* ================= HEADER TOP ================= */}
+      {/* HEADER TOP */}
       <div className="h-[80px] border-b border-slate-100">
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo + Title */}
@@ -34,11 +43,8 @@ const Header = () => {
                 বাজার দর
               </h1>
 
-              <p 
-                suppressHydrationWarning 
-                className="mt-2 text-[13px] font-medium text-slate-500"
-              >
-                {formattedDate}
+              <p className="mt-2 text-[13px] font-medium text-slate-500">
+                {formattedDate || "\u00A0"}
               </p>
             </div>
           </Link>
@@ -57,10 +63,10 @@ const Header = () => {
         </div>
       </div>
 
-      {/* ================= CATEGORY NAV ================= */}
+      {/* CATEGORY NAV */}
       <NavLinks />
 
-      {/* ================= PRICE MARQUEE ================= */}
+      {/* PRICE MARQUEE */}
       <Marquee />
     </header>
   );
