@@ -18,12 +18,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // data-theme="dark"
       className={`${notoSans.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
 
         <Header />
-        {children}
+        <main>
+          {children}
+        </main>
         
 
         </body>
