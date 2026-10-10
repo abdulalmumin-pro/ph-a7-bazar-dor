@@ -1,13 +1,19 @@
-
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 const Banner = () => {
-  const date = new Date().toLocaleDateString("bn-BD", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const [date, setDate] = useState<string>("");
+
+  useEffect(() => {
+    const currentDate = new Date().toLocaleDateString("bn-BD", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    setDate(currentDate);
+  }, []);
 
   return (
     <section className="mx-auto mt-5 max-w-7xl px-4">
@@ -16,7 +22,7 @@ const Banner = () => {
         {/* Left side */}
         <div className="min-w-0 md:col-span-2">
           <span className="inline-flex rounded-full bg-[#e1f2e7] px-3.5 py-1.5 text-sm font-medium leading-5 text-green-700">
-            {date}
+            {date || "\u00A0"}
           </span>
 
           <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-[#202820] md:text-[38px]">
@@ -54,4 +60,3 @@ const Banner = () => {
 };
 
 export default Banner;
-

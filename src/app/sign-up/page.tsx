@@ -4,6 +4,7 @@ import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const SignUp = () => {
     const user = Object.fromEntries(formData.entries()) as Record<string, string>;
 
     if (user.password !== user.confirmPassword) {
-      alert("পাসওয়ার্ড দুটি মিলছে না!");
+      toast.error("পাসওয়ার্ড দুটি মিলছে না!");
       return;
     }
 
@@ -28,13 +29,16 @@ const SignUp = () => {
       callbackURL: "/"
     });
 
-    if (data) {
-      console.log(data);
-      router.push("/");
-    }
-
     if (error) {
       console.log(error);
+      toast.error("সাইন আপ ব্যর্থ হয়েছে!");
+      return;
+    }
+
+    if (data) {
+      console.log(data);
+      toast.success("সাইন আপ সফল হয়েছে!");
+      router.push("/");
     }
   };
 
