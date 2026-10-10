@@ -13,14 +13,17 @@ const SignIn = () => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const credentials = Object.fromEntries(formData.entries()) as Record<string, string>;
+    const credentials = Object.fromEntries(formData.entries()) as Record<
+      string,
+      string
+    >;
 
     console.log("Sign In Submitted:", credentials);
 
     const { data, error } = await authClient.signIn.email({
       email: credentials.email,
       password: credentials.password,
-      callbackURL: "/"
+      callbackURL: "/",
     });
 
     if (error) {
@@ -36,13 +39,25 @@ const SignIn = () => {
     }
   };
 
+  const handleSignIn = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+    console.log(data);
+  };
+
+  const handleSignInGithub = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+    });
+    console.log(data);
+  };
+
   return (
     <div className="min-h-screen bg-[#f2f5f2] flex flex-col justify-center items-center py-4 px-4">
       {/* Header Section */}
       <div className="text-center mb-5">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          সাইন ইন
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">সাইন ইন</h1>
         <p className="text-gray-600 text-xs">
           বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে ঢুকুন।
         </p>
@@ -102,6 +117,7 @@ const SignIn = () => {
         {/* Social Buttons */}
         <div className="grid grid-cols-2 gap-2.5 mb-4">
           <button
+            onClick={handleSignIn}
             type="button"
             className="flex items-center justify-center gap-2 px-2.5 py-2 border border-gray-200 rounded-lg bg-[#fbfcfb] text-gray-800 font-semibold text-xs hover:bg-gray-50 transition"
           >
@@ -109,6 +125,7 @@ const SignIn = () => {
             Google দিয়ে চালিয়ে যান
           </button>
           <button
+            onClick={handleSignInGithub}
             type="button"
             className="flex items-center justify-center gap-2 px-2.5 py-2 border border-gray-200 rounded-lg bg-[#fbfcfb] text-gray-800 font-semibold text-xs hover:bg-gray-50 transition"
           >

@@ -9,6 +9,10 @@ const formatBn = (value: number): string =>
   }).format(value);
 
 export default async function AllProducts() {
+  if (!API_URL) {
+    throw new Error("ALL_PRODUCTS_URL environment variable is not defined");
+  }
+
   const res = await fetch(API_URL, {
     next: { revalidate: 300 },
   });

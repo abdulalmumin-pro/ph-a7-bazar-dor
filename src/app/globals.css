@@ -18,7 +18,7 @@ body {
   display: flex;
   width: max-content;
   /* এখানে ২৫ সেকেন্ডের জায়গায় ৫০ সেকেন্ড বা তার বেশি দিন, গতি তত ধীর হবে */
-  animation: marquee 70s linear infinite; 
+  animation: marquee 90s linear infinite; 
 }
 
 .animate-marquee:hover {

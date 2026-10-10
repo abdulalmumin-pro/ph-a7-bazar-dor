@@ -13,7 +13,10 @@ const SignUp = () => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const user = Object.fromEntries(formData.entries()) as Record<string, string>;
+    const user = Object.fromEntries(formData.entries()) as Record<
+      string,
+      string
+    >;
 
     if (user.password !== user.confirmPassword) {
       toast.error("পাসওয়ার্ড দুটি মিলছে না!");
@@ -26,7 +29,7 @@ const SignUp = () => {
       name: user.name,
       email: user.email,
       password: user.password,
-      callbackURL: "/"
+      callbackURL: "/",
     });
 
     if (error) {
@@ -40,6 +43,20 @@ const SignUp = () => {
       toast.success("সাইন আপ সফল হয়েছে!");
       router.push("/");
     }
+  };
+
+  const handleSignUp = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+    console.log(data);
+  };
+
+  const handleSignUpGithub = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+    });
+    console.log(data);
   };
 
   return (
@@ -136,6 +153,7 @@ const SignUp = () => {
         {/* Social Buttons */}
         <div className="grid grid-cols-2 gap-2.5 mb-4">
           <button
+            onClick={handleSignUp}
             type="button"
             className="flex items-center justify-center gap-2 px-2.5 py-2 border border-gray-200 rounded-lg bg-[#fbfcfb] text-gray-800 font-semibold text-xs hover:bg-gray-50 transition"
           >
@@ -143,6 +161,7 @@ const SignUp = () => {
             Google দিয়ে চালিয়ে যান
           </button>
           <button
+            onClick={handleSignUpGithub}
             type="button"
             className="flex items-center justify-center gap-2 px-2.5 py-2 border border-gray-200 rounded-lg bg-[#fbfcfb] text-gray-800 font-semibold text-xs hover:bg-gray-50 transition"
           >

@@ -27,7 +27,7 @@
 
 **5. Open the application**
 
-Visit [http://localhost:3000](http://localhost:3000) in your browser.
+Live Link: https://ph-a7-bazar-dor.vercel.app | in your browser.
 
 ##
 

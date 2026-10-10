@@ -1,174 +1,146 @@
-import { Suspense } from "react";
+"use client";
 
-interface Market {
-  market: string;
-  division: string;
-  min: number;
-  max: number;
-}
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { LogOut } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-interface Product {
-  id: number | string;
-  slug: string;
-  nameBn: string;
-  category: string;
-  categoryNameBn: string;
-  categoryIcon: string;
-  unit: string;
-  image: string;
-  today: number;
-  yesterday: number;
-  lastWeek: number;
-  lastMonth: number;
-  change: {
-    dir: "up" | "down";
-    pct: number;
-  };
-  markets: Market[];
-}
+const ProfilePage = () => {
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
 
-const getProduct = async (): Promise<Product[]> => {
-  try {
-    const res = await fetch(
-      "https://openapi.programming-hero.com/api/bazardor/products",
-      { cache: 'no-store' }
-    );
-    const result = await res.json();
-    
-    if (Array.isArray(result)) {
-      return result;
-    } else if (result.data && Array.isArray(result.data)) {
-      return result.data;
-    } else if (result.products && Array.isArray(result.products)) {
-      return result.products;
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    if (user?.name) {
+      setName(user.name);
     }
-    return [];
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    return [];
+  }, [user]);
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const { error } = await authClient.updateUser({
+        name: name,
+      });
+
+      if (error) {
+        toast.error("প্রোফাইল আপডেট ব্যর্থ হয়েছে!");
+      } else {
+        toast.success("প্রোফাইল সফলভাবে আপডেট হয়েছে!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("কিছু সমস্যা হয়েছে!");
+    }
+  };
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success("সাইন আউট সফল হয়েছে!");
+          router.push("/sign-in");
+        },
+        onError: () => {
+          toast.error("সাইন আউট ব্যর্থ হয়েছে!");
+        },
+      },
+    });
+  };
+
+  if (isPending) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f3f6f3]">
+        <div className="h-10 w-32 animate-pulse rounded-xl bg-slate-200" />
+      </div>
+    );
   }
-};
-
-interface PageProps {
-  params: Promise<{ Id: string }>;
-}
-
-export default async function ProductDetails({ params }: PageProps) {
-  return (
-    <Suspense fallback={<div className="p-4 text-center text-gray-500 text-sm">লোডিং হচ্ছে...</div>}>
-      <ProductView params={params} />
-    </Suspense>
-  );
-}
-
-async function ProductView({ params }: PageProps) {
-  const { Id } = await params;
-
-  const products = await getProduct();
-  const product = products.find((pro) => String(pro.id) === String(Id));
-
-  if (!product) {
-    return <div className="p-6 text-center text-red-500 text-sm font-semibold">প্রোডাক্টটি পাওয়া যায়নি!</div>;
-  }
-
-  const minPrices = product.markets?.map((m) => m.min) || [0];
-  const maxPrices = product.markets?.map((m) => m.max) || [0];
-  const lowestPrice = Math.min(...minPrices);
-  const highestPrice = Math.max(...maxPrices);
-  const avgPrice = Math.round((lowestPrice + highestPrice) / 2);
 
   return (
-    <div className="w-full min-h-screen bg-slate-100 py-4 px-3 md:px-8">
-      <div className="max-w-5xl mx-auto space-y-4 text-xs md:text-sm">
-        {/* ব্রেডক্রাম্ব */}
-        <div className="breadcrumbs text-gray-500 text-xs py-0 my-0 overflow-x-auto">
-          <ul>
-            <li>হোম</li>
-            <li>{product.categoryNameBn}</li>
-            <li>{product.nameBn}</li>
-          </ul>
+    <div className="min-h-screen bg-[#f3f6f3] px-3 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl space-y-4 sm:space-y-6">
+        {/* PAGE HEADER */}
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1c2e24]">
+            আমার প্রোফাইল
+          </h1>
+          <p className="mt-0.5 text-xs sm:text-sm text-slate-500">
+            আপনার অ্যাকাউন্টের তথ্য এখানে দেখুন।
+          </p>
         </div>
 
-        {/* টপ কার্ড: প্রোডাক্ট ওভারভিউ */}
-        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-            <div className="text-3xl md:text-4xl bg-slate-50 p-3.5 rounded-2xl flex items-center justify-center w-16 h-16 shrink-0 border border-slate-200/60">
-              {product.image}
+        {/* USER CARD (TOP SECTION) */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="flex items-center gap-3.5 w-full sm:w-auto min-w-0">
+            {/* User Avatar */}
+            <div className="relative h-16 w-16 sm:h-20 sm:w-20 overflow-hidden rounded-2xl bg-slate-100 shrink-0">
+              <Image
+                src={user?.image || "/profile.png"}
+                alt={user?.name || "User"}
+                fill
+                className="object-cover"
+              />
             </div>
-            <div>
-              <h1 className="text-lg md:text-xl font-bold text-slate-800">{product.nameBn}</h1>
-              <p className="text-gray-500 text-xs mt-0.5">প্রতি কেজি - {product.categoryNameBn}</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">
-                গতকালের তুলনায় আজ দাম {product.change?.dir === "up" ? "বেড়েছে" : "কমেছে"} {product.change?.pct}%
+
+            {/* User Info */}
+            <div className="min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
+                {user?.name || "Rezwan Ahmed"}
+              </h2>
+              <p className="mt-0.5 text-xs sm:text-sm text-slate-500 truncate">
+                {user?.email || "rezwanahmed@gmail.com"}
               </p>
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200/60 p-3.5 rounded-xl text-center w-full sm:w-auto sm:min-w-[140px] flex flex-col justify-center">
-            <p className="text-[11px] text-gray-500 font-medium">আজকের দাম</p>
-            <p className="text-2xl font-extrabold text-slate-800 my-0.5">{product.today}</p>
-            <p className="text-[10px] text-gray-500">টাকা / কেজি</p>
-            <p className={`text-[11px] mt-0.5 font-semibold flex items-center justify-center gap-0.5 ${product.change?.dir === "up" ? "text-red-500" : "text-emerald-600"}`}>
-              <span>{product.change?.dir === "up" ? "▲" : "▼"}</span>
-              <span>{product.change?.pct}%</span>
-            </p>
-          </div>
+          {/* Sign Out Button */}
+          <button
+            onClick={handleSignOut}
+            type="button"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-4 py-2.5 text-sm font-medium text-red-500 shadow-sm transition-colors hover:bg-red-50 shrink-0"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>সাইন আউট</span>
+          </button>
         </div>
 
-        {/* দামের সারসংক্ষেপ */}
-        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-3">
-          <h2 className="text-base font-bold text-slate-800">দামের সারসংক্ষেপ</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
-              <p className="text-[11px] text-gray-500 font-medium">সর্বনিম্ন দাম</p>
-              <p className="text-base font-bold text-emerald-600 mt-0.5">{lowestPrice} টাকা</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">সবচেয়ে কম দামের বাজার</p>
-            </div>
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
-              <p className="text-[11px] text-gray-500 font-medium">সর্বাধিক দাম</p>
-              <p className="text-base font-bold text-red-500 mt-0.5">{highestPrice} টাকা</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">সবচেয়ে বেশি দামের বাজার</p>
-            </div>
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
-              <p className="text-[11px] text-gray-500 font-medium">গড় দাম</p>
-              <p className="text-base font-bold text-slate-800 mt-0.5">{avgPrice} টাকা</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">প্রতি কেজি-র হিসাব</p>
-            </div>
-          </div>
-        </div>
+        {/* INFO EDIT FORM (BOTTOM SECTION) */}
+        <div className="rounded-2xl border border-slate-100 bg-white p-4 sm:p-6 shadow-sm">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900">তথ্য</h3>
 
-        {/* বাজারভিত্তিক আজকের দাম টেবিল */}
-        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-3">
-          <h2 className="text-base font-bold text-slate-800">বাজারভিত্তিক আজকের দাম</h2>
-          <div className="overflow-x-auto">
-            <table className="table w-full text-xs md:text-sm min-w-[500px]">
-              <thead>
-                <tr className="border-b border-slate-200 text-gray-500 font-semibold bg-slate-50/50">
-                  <th className="py-3 px-4 text-left">বাজার</th>
-                  <th className="py-3 px-4 text-left">বিভাগ</th>
-                  <th className="py-3 px-4 text-left">সর্বনিম্ন</th>
-                  <th className="py-3 px-4 text-left">সর্বাধিক</th>
-                  <th className="py-3 px-4 text-left">গড়</th>
-                </tr>
-              </thead>
-              <tbody>
-                {product.markets?.map((m, index) => {
-                  const marketAvg = Math.round((m.min + m.max) / 2);
-                  return (
-                    <tr key={index} className="border-b border-slate-100 hover:bg-slate-50/60 transition-colors">
-                      <td className="py-3 px-4 font-medium text-slate-700">{m.market}</td>
-                      <td className="py-3 px-4 text-gray-500">{m.division}</td>
-                      <td className="py-3 px-4 text-gray-600">{m.min} টাকা</td>
-                      <td className="py-3 px-4 text-gray-600">{m.max} টাকা</td>
-                      <td className="py-3 px-4 text-gray-600">{marketAvg} টাকা</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <form onSubmit={handleUpdate} className="mt-4 sm:mt-6 space-y-4 sm:space-y-5">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-xs sm:text-sm font-semibold text-slate-700"
+              >
+                নাম
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="mt-1.5 w-full rounded-xl border border-slate-200 bg-[#f9fbf9] px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-slate-800 transition-colors focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-xl bg-[#008744] py-2.5 sm:py-3 text-sm sm:text-base font-medium text-white shadow-md transition-all hover:bg-[#00753a] active:scale-[0.99]"
+            >
+              আপডেট
+            </button>
+          </form>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default ProfilePage;
