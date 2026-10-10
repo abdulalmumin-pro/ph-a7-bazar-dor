@@ -1,6 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
 
-// Define TypeScript interfaces directly inside the component file
 export interface ProductChange {
   dir: "up" | "down" | "none" | string;
   pct: number;
@@ -16,7 +16,7 @@ export interface Product {
   change: ProductChange;
 }
 
-const API_URL = process.env.RISERS_PRODUCT_URL;
+const API_URL = process.env.RISERS_PRODUCT_URL || "https://openapi.programming-hero.com/api/bazardor/products";
 
 const formatBn = (value: number): string =>
   new Intl.NumberFormat("bn-BD", {
@@ -54,7 +54,6 @@ export default async function RisersProduct() {
       ? ((result as { data: Product[] }).data as Product[])
       : [];
 
-  // Filter for price risers and limit to exactly 6 cards
   const risers: Product[] = products
     .filter((product: Product) => product.change?.dir === "up")
     .slice(0, 6);
@@ -68,52 +67,54 @@ export default async function RisersProduct() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {risers.map((product: Product) => (
-          <article
-            key={product.id}
-            className="flex min-h-[113px] min-w-0 flex-col justify-between rounded-[14px] border border-[#e1e9e2] bg-[#fbfdfc] p-3 transition-colors duration-200 hover:border-[#cadbce]"
-          >
-            <div className="flex min-w-0 items-center gap-2.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f0f5f1] text-[21px]">
-                {product.image &&
-                (/^https?:\/\//i.test(product.image) ||
-                  product.image.startsWith("/")) ? (
-                  <Image
-                    src={product.image}
-                    alt={product.nameBn}
-                    width={40}
-                    height={40}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  product.image || product.categoryIcon || "🛒"
-                )}
+          // সঠিক নিয়ম: প্রতিটি আলাদা কার্ডকে লিংক দিয়ে র‍্যাপ করা হয়েছে
+          <Link key={product.id} href={`/details/${product.id}`} className="block group">
+            <article
+              className="flex min-h-[113px] min-w-0 flex-col justify-between rounded-[14px] border border-[#e1e9e2] bg-[#fbfdfc] p-3 transition-all duration-200 group-hover:border-[#cadbce] group-hover:shadow-sm"
+            >
+              <div className="flex min-w-0 items-center gap-2.5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#f0f5f1] text-[21px]">
+                  {product.image &&
+                  (/^https?:\/\//i.test(product.image) ||
+                    product.image.startsWith("/")) ? (
+                    <Image
+                      src={product.image}
+                      alt={product.nameBn}
+                      width={40}
+                      height={40}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    product.image || product.categoryIcon || "🛒"
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <h3 className="break-words text-sm font-bold leading-5 text-[#27312a] group-hover:text-emerald-700 transition-colors">
+                    {product.nameBn}
+                  </h3>
+                  <p className="text-[11px] leading-4 text-[#707970]">
+                    {getUnitLabel(product.unit)}
+                  </p>
+                </div>
               </div>
 
-              <div className="min-w-0">
-                <h3 className="break-words text-sm font-bold leading-5 text-[#27312a]">
-                  {product.nameBn}
-                </h3>
-                <p className="text-[11px] leading-4 text-[#707970]">
-                  {getUnitLabel(product.unit)}
-                </p>
-              </div>
-            </div>
+              <div className="mt-2 flex items-end justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-[10px] leading-4 text-[#727a73]">
+                    আজকের দাম
+                  </p>
+                  <p className="whitespace-nowrap text-[15px] font-bold leading-5 text-[#263029]">
+                    {formatBn(product.today)} টাকা
+                  </p>
+                </div>
 
-            <div className="mt-2 flex items-end justify-between gap-2">
-              <div className="min-w-0">
-                <p className="text-[10px] leading-4 text-[#727a73]">
-                  আজকের দাম
-                </p>
-                <p className="whitespace-nowrap text-[15px] font-bold leading-5 text-[#263029]">
-                  {formatBn(product.today)} টাকা
-                </p>
+                <span className="inline-flex min-h-5 shrink-0 items-center gap-1 rounded-full bg-[#f1f5f1] px-2 py-1 text-[10px] font-semibold leading-none text-red-600">
+                  ▲ {formatBn(product.change?.pct ?? 0)}%
+                </span>
               </div>
-
-              <span className="inline-flex min-h-5 shrink-0 items-center gap-1 rounded-full bg-[#f1f5f1] px-2 py-1 text-[10px] font-semibold leading-none text-red-600">
-                ▲ {formatBn(product.change?.pct ?? 0)}%
-              </span>
-            </div>
-          </article>
+            </article>
+          </Link>
         ))}
       </div>
 

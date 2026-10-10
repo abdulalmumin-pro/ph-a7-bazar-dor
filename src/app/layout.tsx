@@ -5,7 +5,6 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
-import Marquee from "./components/Marquee";
 
 const notoSans = Noto_Sans_Bengali({
   variable: "--font-geist-sans",
@@ -28,11 +27,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Header-কে Suspense দিয়ে র‍্যাপ করা হলো */}
         <Suspense fallback={<div className="h-[80px] w-full bg-white border-b" />}>
           <Header />
-        </Suspense>
-
-        {/* Marquee-কে Suspense দিয়ে র‍্যাপ করা হলো */}
-        <Suspense fallback={<div className="h-10 w-full bg-[#f8faf9] animate-pulse" />}>
-          <Marquee />
         </Suspense>
 
         <main className="flex-1">

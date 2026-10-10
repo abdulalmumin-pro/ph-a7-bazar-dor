@@ -5,27 +5,22 @@
 body {
   background: rgb(243, 236, 236);
 }
-
-
-@keyframes marquee-right {
-  from {
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
     transform: translateX(-50%);
   }
-
-  to {
-    transform: translateX(0);
-  }
 }
 
-.marquee-track {
-  animation-name: marquee-right;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  will-change: transform;
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  /* এখানে ২৫ সেকেন্ডের জায়গায় ৫০ সেকেন্ড বা তার বেশি দিন, গতি তত ধীর হবে */
+  animation: marquee 70s linear infinite; 
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation-play-state: paused;
-  }
+.animate-marquee:hover {
+  animation-play-state: paused;
 }

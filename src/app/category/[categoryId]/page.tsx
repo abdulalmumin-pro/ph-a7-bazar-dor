@@ -111,8 +111,8 @@ const CategoryProduct = async ({ params }: PageProps) => {
             className="rounded-lg border border-[#e1e9e2] bg-[#fbfdfc] px-3 py-1.5 text-xs font-medium text-[#27322b] outline-none focus:border-[#cadbce] sm:text-sm"
           >
             <option value="default">ডিফল্ট</option>
-            <option value="low-to-high">কম দাম</option>
-            <option value="high-to-low">বেশি দাম</option>
+            <option value="low-to-high">কম থেকে বেশি</option>
+            <option value="high-to-low">বেশি থেকে কম</option>
           </select>
         </div>
 

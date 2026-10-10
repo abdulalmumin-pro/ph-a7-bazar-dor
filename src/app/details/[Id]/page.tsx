@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 
+// টাইপ ইন্টারফেস ডিফাইন করা
 interface Market {
   market: string;
   division: string;
@@ -30,7 +31,7 @@ interface Product {
 const getProduct = async (): Promise<Product[]> => {
   try {
     const res = await fetch(
-      "https://openapi.programming-hero.com/api/bazardor/products",
+      process.env.DETAILS_PAGE_URL as string,
       { cache: 'no-store' }
     );
     const result = await res.json();
@@ -80,7 +81,6 @@ async function ProductView({ params }: PageProps) {
   return (
     <div className="w-full min-h-screen bg-slate-100 py-4 px-3 md:px-8">
       <div className="max-w-5xl mx-auto space-y-4 text-xs md:text-sm">
-        {/* ব্রেডক্রাম্ব */}
         <div className="breadcrumbs text-gray-500 text-xs py-0 my-0 overflow-x-auto">
           <ul>
             <li>হোম</li>
@@ -92,7 +92,7 @@ async function ProductView({ params }: PageProps) {
         {/* টপ কার্ড: প্রোডাক্ট ওভারভিউ */}
         <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-4 w-full sm:w-auto">
-            <div className="text-3xl md:text-4xl bg-slate-50 p-3.5 rounded-2xl flex items-center justify-center w-16 h-16 shrink-0 border border-slate-200/60">
+            <div className="text-3xl md:text-4xl bg-slate-50 p-3.5 rounded-2xl flex items-center justify-center w-16 h-16 shrink-0 border border-slate-100">
               {product.image}
             </div>
             <div>
@@ -119,17 +119,17 @@ async function ProductView({ params }: PageProps) {
         <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-3">
           <h2 className="text-base font-bold text-slate-800">দামের সারসংক্ষেপ</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
               <p className="text-[11px] text-gray-500 font-medium">সর্বনিম্ন দাম</p>
               <p className="text-base font-bold text-emerald-600 mt-0.5">{lowestPrice} টাকা</p>
               <p className="text-[10px] text-gray-400 mt-0.5">সবচেয়ে কম দামের বাজার</p>
             </div>
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
               <p className="text-[11px] text-gray-500 font-medium">সর্বাধিক দাম</p>
               <p className="text-base font-bold text-red-500 mt-0.5">{highestPrice} টাকা</p>
               <p className="text-[10px] text-gray-400 mt-0.5">সবচেয়ে বেশি দামের বাজার</p>
             </div>
-            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/60">
+            <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
               <p className="text-[11px] text-gray-500 font-medium">গড় দাম</p>
               <p className="text-base font-bold text-slate-800 mt-0.5">{avgPrice} টাকা</p>
               <p className="text-[10px] text-gray-400 mt-0.5">প্রতি কেজি-র হিসাব</p>
@@ -137,30 +137,30 @@ async function ProductView({ params }: PageProps) {
           </div>
         </div>
 
-        {/* বাজারভিত্তিক আজকের দাম টেবিল */}
+        {/* today's price table */}
         <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/60 space-y-3">
           <h2 className="text-base font-bold text-slate-800">বাজারভিত্তিক আজকের দাম</h2>
           <div className="overflow-x-auto">
             <table className="table w-full text-xs md:text-sm min-w-[500px]">
               <thead>
-                <tr className="border-b border-slate-200 text-gray-500 font-semibold bg-slate-50/50">
-                  <th className="py-3 px-4 text-left">বাজার</th>
-                  <th className="py-3 px-4 text-left">বিভাগ</th>
-                  <th className="py-3 px-4 text-left">সর্বনিম্ন</th>
-                  <th className="py-3 px-4 text-left">সর্বাধিক</th>
-                  <th className="py-3 px-4 text-left">গড়</th>
+                <tr className="border-b border-slate-100 text-gray-400 font-medium">
+                  <th className="bg-transparent py-2">বাজার</th>
+                  <th className="bg-transparent py-2">বিভাগ</th>
+                  <th className="bg-transparent py-2">সর্বনিম্ন</th>
+                  <th className="bg-transparent py-2">সর্বাধিক</th>
+                  <th className="bg-transparent py-2">গড়</th>
                 </tr>
               </thead>
               <tbody>
                 {product.markets?.map((m, index) => {
                   const marketAvg = Math.round((m.min + m.max) / 2);
                   return (
-                    <tr key={index} className="border-b border-slate-100 hover:bg-slate-50/60 transition-colors">
-                      <td className="py-3 px-4 font-medium text-slate-700">{m.market}</td>
-                      <td className="py-3 px-4 text-gray-500">{m.division}</td>
-                      <td className="py-3 px-4 text-gray-600">{m.min} টাকা</td>
-                      <td className="py-3 px-4 text-gray-600">{m.max} টাকা</td>
-                      <td className="py-3 px-4 text-gray-600">{marketAvg} টাকা</td>
+                    <tr key={index} className="border-b border-slate-50 hover:bg-slate-50/60 transition-colors">
+                      <td className="font-medium text-slate-700 py-2.5">{m.market}</td>
+                      <td className="text-gray-500 py-2.5">{m.division}</td>
+                      <td className="text-gray-600 py-2.5">{m.min} টাকা</td>
+                      <td className="text-gray-600 py-2.5">{m.max} টাকা</td>
+                      <td className="text-gray-600 py-2.5">{marketAvg} টাকা</td>
                     </tr>
                   );
                 })}
