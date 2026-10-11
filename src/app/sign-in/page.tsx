@@ -40,17 +40,49 @@ const SignIn = () => {
   };
 
   const handleSignIn = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
-    console.log(data);
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        console.log(error);
+        toast.error("গুগল সাইন ইন ব্যর্থ হয়েছে!");
+        return;
+      }
+
+      // Note: Social login usually redirects to the provider, 
+      // but if it returns data immediately:
+      if (data) {
+        toast.success("সাইন ইন সফল হয়েছে!");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.errorjs?.("কিছু সমস্যা হয়েছে!");
+    }
   };
 
   const handleSignInGithub = async () => {
-    const data = await authClient.signIn.social({
-      provider: "github",
-    });
-    console.log(data);
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        console.log(error);
+        toast.error("গিটহ্যাব সাইন ইন ব্যর্থ হয়েছে!");
+        return;
+      }
+
+      if (data) {
+        toast.success("সাইন ইন সফল হয়েছে!");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("কিছু সমস্যা হয়েছে!");
+    }
   };
 
   return (

@@ -46,17 +46,47 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
-    console.log(data);
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        console.log(error);
+        toast.error("গুগল সাইন আপ ব্যর্থ হয়েছে!");
+        return;
+      }
+
+      if (data) {
+        toast.success("সাইন আপ সফল হয়েছে!");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("কিছু সমস্যা হয়েছে!");
+    }
   };
 
   const handleSignUpGithub = async () => {
-    const data = await authClient.signIn.social({
-      provider: "github",
-    });
-    console.log(data);
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        console.log(error);
+        toast.error("গিটহ্যাব সাইন আপ ব্যর্থ হয়েছে!");
+        return;
+      }
+
+      if (data) {
+        toast.success("সাইন আপ সফল হয়েছে!");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("কিছু সমস্যা হয়েছে!");
+    }
   };
 
   return (
