@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
   const user = session?.user;
 
   if(!user){
-      return NextResponse.redirect(new URL("/sign-up", request.url));
+      return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 }
 

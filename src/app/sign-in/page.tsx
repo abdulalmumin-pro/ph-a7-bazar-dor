@@ -59,7 +59,7 @@ const SignIn = () => {
       }
     } catch (err) {
       console.log(err);
-      toast.errorjs?.("কিছু সমস্যা হয়েছে!");
+      toast.error?.("কিছু সমস্যা হয়েছে!");
     }
   };
 
