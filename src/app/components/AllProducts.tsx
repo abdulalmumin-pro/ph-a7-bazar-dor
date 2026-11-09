@@ -33,7 +33,10 @@ export default async function AllProducts() {
       : [];
 
   return (
-    <section className="w-full font-['Hind_Siliguri',sans-serif]">
+    <section
+      id="সব-পণ্য"
+      className="w-full scroll-mt-44 font-['Hind_Siliguri',sans-serif]"
+    >
       {/* Original Header */}
       <div className="mb-3">
         <h2 className="text-[17px] font-bold leading-6 text-[#27322b]">

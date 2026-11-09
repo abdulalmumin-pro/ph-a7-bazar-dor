@@ -34,12 +34,12 @@ const Banner = () => {
             বিস্তারিত, গড়, সর্বনিম্ন-সর্বাধিক এবং দামের পরিবর্তন এক জায়গায়।
           </p>
 
-          <button
-            type="button"
-            className="mt-7 rounded-lg bg-[#07883e] px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#067333]"
+          <a
+            href="#সব-পণ্য"
+            className="mt-7 inline-block rounded-lg bg-[#07883e] px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#067333]"
           >
             সব পণ্য দেখুন
-          </button>
+          </a>
         </div>
 
         {/* Right side */}

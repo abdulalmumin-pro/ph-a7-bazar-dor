@@ -1,5 +1,5 @@
 
-import ProductCard from "@/app/components/ProductCard";
+import CategoryProducts from "@/app/components/CategoryProducts";
 import { Product } from "@/app/types/product";
 
 interface PageProps {
@@ -99,42 +99,7 @@ const CategoryProduct = async ({ params }: PageProps) => {
           </div>
         </div>
 
-        {/* Sort Bar */}
-        <div className="flex items-center justify-end gap-2 rounded-2xl border border-[#e1e9e2] bg-white px-4 py-3 shadow-sm">
-          <span className="text-xs font-medium text-[#727a73] sm:text-sm">
-            সাজান
-          </span>
-
-          <select
-            defaultValue="default"
-            aria-label="পণ্য সাজান"
-            className="rounded-lg border border-[#e1e9e2] bg-[#fbfdfc] px-3 py-1.5 text-xs font-medium text-[#27322b] outline-none focus:border-[#cadbce] sm:text-sm"
-          >
-            <option value="default">ডিফল্ট</option>
-            <option value="low-to-high">কম থেকে বেশি</option>
-            <option value="high-to-low">বেশি থেকে কম</option>
-          </select>
-        </div>
-
-        {/* Product Count */}
-        <div className="px-1 pt-1">
-          <p className="text-xs text-[#727a73] sm:text-sm">
-            মোট {formatBn(totalItemsCount)}টি পণ্য দেখানো হচ্ছে
-          </p>
-        </div>
-
-        {/* Product Grid */}
-        {products.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-[#e1e9e2] bg-white py-12 text-center text-sm text-[#727a73]">
-            এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি।
-          </div>
-        )}
+        <CategoryProducts products={products} />
       </div>
     </div>
   );
